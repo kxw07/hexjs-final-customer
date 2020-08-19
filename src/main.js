@@ -17,6 +17,7 @@ Vue.use(Loading)
 
 Vue.prototype._ = _
 Vue.prototype.$ = $
+Vue.prototype.$bus = new Vue()
 
 new Vue({
   router,
