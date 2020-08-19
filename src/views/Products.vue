@@ -1,5 +1,6 @@
 <template>
   <div id="app" class="container">
+    <product-modal v-model="modalOpen" :product="product" v-on:close-modal="reverseModalState"></product-modal>
     <div class="row mt-4">
       <div v-for="product in products" :key="product.id" class="col-md-4 mb-4">
         <div class="card border-0 shadow-sm">
@@ -22,13 +23,12 @@
             </div>
           </div>
           <div class="card-footer d-flex">
-            <product-modal v-model="modalOpen" :product="product" v-on:close-modal="reverseModalState"></product-modal>
             <button type="button" class="btn btn-outline-secondary btn-sm" v-on:click="getProductDetail(product.id)">
               查看更多
             </button>
-            <!--            <button type="button" class="btn btn-outline-danger btn-sm ml-auto" v-on:click="addToCart(product)">-->
-            <!--              加到購物車-->
-            <!--            </button>-->
+            <button type="button" class="btn btn-outline-danger btn-sm ml-auto" v-on:click="addToCart(product)">
+              加到購物車
+            </button>
           </div>
         </div>
       </div>
