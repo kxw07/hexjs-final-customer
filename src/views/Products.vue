@@ -83,8 +83,16 @@ export default {
       //   })
     },
     addToCart (product, quantity = 1) {
-      product.num = quantity
-      this.$bus.$emit('addToCart', JSON.parse(JSON.stringify(product)))
+      this.axios.post(`https://course-ec-api.hexschool.io/api/${process.env.VUE_APP_UUID}/ec/shopping`, {
+        product: product.id,
+        quantity: quantity
+      })
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => {
+          console.error(err)
+        })
     },
     deleteItem (itemIndex) {
       this.shoppingList.splice(itemIndex, 1)
