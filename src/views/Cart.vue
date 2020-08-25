@@ -116,7 +116,7 @@
           <div class="form-group">
             <ValidationProvider>
               <label for="coupon">優惠券</label>
-              <input id="coupon" name="優惠券" v-model="coupon" cols="30" row="3" class="form-control">
+              <input id="coupon" name="優惠券" v-model="coupon" cols="30" row="3" class="form-control" v-on:blur="searchCoupon">
             </ValidationProvider>
           </div>
 
@@ -156,7 +156,8 @@ export default {
       address: '',
       payMethod: '',
       coupon: '',
-      message: ''
+      message: '',
+      couponPercent: 1
     }
   },
   created () {
@@ -164,12 +165,25 @@ export default {
   },
   computed: {
     calculateTotalPrice () {
-      return this.shoppingList.length === 0 ? 0 : this.shoppingList.reduce((totalPrice, item) => {
+      return this.shoppingList.length === 0 ? 0 : (this.shoppingList.reduce((totalPrice, item) => {
         return totalPrice + item.product.price * item.quantity
-      }, 0)
+      }, 0)) * this.couponPercent
     }
   },
   methods: {
+    searchCoupon () {
+      this.axios.post(`https://course-ec-api.hexschool.io/api/${process.env.VUE_APP_UUID}/ec/coupon/search`, {
+        code: this.coupon
+      })
+        .then(res => {
+          this.couponPercent = res.data.data.percent / 100
+          console.log(res)
+        })
+        .catch(err => {
+          this.couponPercent = 1
+          console.error(err)
+        })
+    },
     getCartList () {
       const loader = this.$loading.show()
       this.axios.get(`https://course-ec-api.hexschool.io/api/${process.env.VUE_APP_UUID}/ec/shopping`)
