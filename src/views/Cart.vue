@@ -9,8 +9,8 @@
         <table class="table">
           <thead>
           <tr>
-            <th>-</th>
-            <th>#</th>
+            <th>編輯</th>
+            <th>項次</th>
             <th>品名</th>
             <th width="150px">數量</th>
             <th>單位</th>
