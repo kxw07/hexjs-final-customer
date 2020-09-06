@@ -1,6 +1,10 @@
 <template>
   <div id="app" class="container">
-    <product-modal v-model="modalOpen" :product="product" v-on:close-modal="reverseModalState"></product-modal>
+    <product-modal :product="product" v-if="showModal" v-on:close="showModal = false" class="overlay"></product-modal>
+    <!--    <button id="show-modal" v-on:click="showModal = true">Show Modal</button>-->
+    <!--    <testmodal v-if="showModal" v-on:close="showModal = false" class="overlay">-->
+    <!--      <h3 slot="header">custom header</h3>-->
+    <!--    </testmodal>-->
     <div class="row mt-4">
       <div v-for="product in products" :key="product.id" class="col-md-4 mb-4">
         <div class="card border-0 shadow-sm">
@@ -48,6 +52,7 @@ export default {
     return {
       isLoading: true,
       modalOpen: false,
+      showModal: false,
       products: [],
       product: {}
     }
@@ -67,7 +72,7 @@ export default {
   },
   methods: {
     getProductDetail (productId) {
-      this.reverseModalState()
+      this.showModal = true
       // this.isLoading = true
       // this.axios.get(`https://course-ec-api.hexschool.io/api/${process.env.VUE_APP_UUID}/ec/product/${productId}`)
       //   .then(res => {

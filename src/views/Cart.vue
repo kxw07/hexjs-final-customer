@@ -31,7 +31,7 @@
                 <div class="input-group-prepend">
                   <button class="btn btn-outline-primary" v-on:click="addItemQuantity(item, 1)">+</button>
                 </div>
-                <input id="inlineFormInputGroupUsername" type="text" class="form-control text-center"
+                <input type="text" class="form-control text-center"
                        :value="item.quantity">
                 <div class="input-group-append">
                   <button class="btn btn-outline-primary" v-on:click="addItemQuantity(item, -1)"
