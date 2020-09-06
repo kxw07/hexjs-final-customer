@@ -12,11 +12,13 @@ import $ from 'jquery'
 import * as VeeValidate from 'vee-validate'
 import * as rules from 'vee-validate/dist/rules'
 import { messages } from 'vee-validate/dist/locale/zh_TW.json'
+import VModal from 'vue-js-modal'
 
 Vue.config.productionTip = false
 
 Vue.use(VueAxios, axios)
 Vue.use(Loading)
+Vue.use(VModal)
 
 Vue.prototype._ = _
 Vue.prototype.$ = $
