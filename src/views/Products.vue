@@ -1,10 +1,6 @@
 <template>
   <div id="app" class="container">
-    <product-modal :product="product" v-if="showModal" v-on:close="showModal = false" class="overlay"></product-modal>
-    <!--    <button id="show-modal" v-on:click="showModal = true">Show Modal</button>-->
-    <!--    <testmodal v-if="showModal" v-on:close="showModal = false" class="overlay">-->
-    <!--      <h3 slot="header">custom header</h3>-->
-    <!--    </testmodal>-->
+    <product-modal :product="product" v-if="showModal" v-on:close="showModal = false" v-on:addToCart="addToCart"></product-modal>
     <div class="row mt-4">
       <div v-for="product in products" :key="product.id" class="col-md-4 mb-4">
         <div class="card border-0 shadow-sm">
@@ -50,8 +46,6 @@ export default {
   },
   data () {
     return {
-      isLoading: true,
-      modalOpen: false,
       showModal: false,
       products: [],
       product: {}
@@ -67,6 +61,7 @@ export default {
       })
       .catch(err => {
         console.error(err)
+        loading.hide()
       })
   },
   mounted () {
@@ -74,22 +69,24 @@ export default {
   },
   methods: {
     getProductDetail (productId) {
-      this.showModal = true
-      // this.isLoading = true
-      // this.axios.get(`https://course-ec-api.hexschool.io/api/${process.env.VUE_APP_UUID}/ec/product/${productId}`)
-      //   .then(res => {
-      //     this.isLoading = false
-      //     this.product = res.data.data
-      //     this.product.num = 0
-      //     // this.$('#productModal').modal('show')
-      //     this.reverseModalState()
-      //     console.log(this.modalOpen)
-      //   })
-      //   .catch(err => {
-      //     console.error(err)
-      //   })
+      const loading = this.$loading.show()
+
+      this.axios.get(`https://course-ec-api.hexschool.io/api/${process.env.VUE_APP_UUID}/ec/product/${productId}`)
+        .then(res => {
+          this.product = res.data.data
+          this.product.num = 0
+          this.showModal = true
+
+          loading.hide()
+        })
+        .catch(err => {
+          console.error(err)
+          loading.hide()
+        })
     },
     addToCart (product, quantity = 1) {
+      console.log('listen addToCard', product)
+
       this.axios.post(`https://course-ec-api.hexschool.io/api/${process.env.VUE_APP_UUID}/ec/shopping`, {
         product: product.id,
         quantity: quantity
@@ -103,10 +100,6 @@ export default {
     },
     deleteItem (itemIndex) {
       this.shoppingList.splice(itemIndex, 1)
-    },
-    reverseModalState () {
-      console.log(this.modalOpen)
-      this.modalOpen = !this.modalOpen
     }
   }
 }
