@@ -58,10 +58,12 @@ export default {
     }
   },
   created () {
+    const loading = this.$loading.show()
+
     this.axios.get(`https://course-ec-api.hexschool.io/api/${process.env.VUE_APP_UUID}/ec/products`)
       .then(res => {
-        this.isLoading = false
         this.products = res.data.data
+        loading.hide()
       })
       .catch(err => {
         console.error(err)
