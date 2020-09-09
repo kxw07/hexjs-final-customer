@@ -34,22 +34,26 @@
         </div>
       </div>
     </div>
+    <paging class="paging" :pagination="pagination" v-on:change-page="getProductList"></paging>
   </div>
 </template>
 
 <script>
 import productModal from '@/components/ProductModal'
+import paging from '@/components/Paging.vue'
 
 export default {
   name: 'Products',
   components: {
-    productModal
+    productModal,
+    paging
   },
   data () {
     return {
       showModal: false,
       products: [],
-      product: {}
+      product: {},
+      pagination: {}
     }
   },
   created () {
@@ -58,12 +62,13 @@ export default {
   mounted () {
   },
   methods: {
-    getProductList () {
+    getProductList (page = this.pagination.current_page || 1) {
       const loading = this.$loading.show()
 
-      this.axios.get(`https://course-ec-api.hexschool.io/api/${process.env.VUE_APP_UUID}/ec/products`
+      this.axios.get(`https://course-ec-api.hexschool.io/api/${process.env.VUE_APP_UUID}/ec/products?page=${page}`
       ).then(res => {
         this.products = res.data.data
+        this.pagination = res.data.meta.pagination
         loading.hide()
       }).catch(err => {
         console.error(err)

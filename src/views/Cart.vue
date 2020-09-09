@@ -57,6 +57,7 @@
         </table>
       </div>
     </div>
+    <paging class="paging" :pagination="pagination" v-on:change-page="getCartList"></paging>
     <div class="my-5 row justify-content-center">
       <ValidationObserver v-slot="{ invalid }" class="col-md-6">
         <form v-on:submit.prevent="sendOrder">
@@ -139,12 +140,14 @@
 
 <script>
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import paging from '@/components/Paging.vue'
 
 export default {
   name: 'Cart',
   components: {
     ValidationProvider,
-    ValidationObserver
+    ValidationObserver,
+    paging
   },
   data () {
     return {
@@ -157,7 +160,8 @@ export default {
       payMethod: '',
       coupon: '',
       message: '',
-      couponPercent: 1
+      couponPercent: 1,
+      pagination: {}
     }
   },
   created () {
@@ -184,11 +188,12 @@ export default {
           console.error(err)
         })
     },
-    getCartList () {
+    getCartList (page = this.pagination.current_page || 1) {
       const loader = this.$loading.show()
-      this.axios.get(`https://course-ec-api.hexschool.io/api/${process.env.VUE_APP_UUID}/ec/shopping`)
+      this.axios.get(`https://course-ec-api.hexschool.io/api/${process.env.VUE_APP_UUID}/ec/shopping?&page=${page}`)
         .then(res => {
           this.shoppingList = res.data.data
+          this.pagination = res.data.meta.pagination
           loader.hide()
         })
         .catch(err => {
