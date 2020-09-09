@@ -55,7 +55,8 @@ export default {
   created () {
     this.getProductList()
   },
-  mounted () {},
+  mounted () {
+  },
   methods: {
     getProductList () {
       const loading = this.$loading.show()
@@ -85,18 +86,26 @@ export default {
       })
     },
     addToCart (product, quantity = 1) {
-      this.axios.delete(`https://course-ec-api.hexschool.io/api/${process.env.VUE_APP_UUID}/ec/shopping/${product.id}`
-      ).then(res => {
-        console.log(res)
-
-        this.axios.post(`https://course-ec-api.hexschool.io/api/${process.env.VUE_APP_UUID}/ec/shopping`, {
-          product: product.id,
-          quantity: quantity
-        }).then(res => {
+      this.deleteCartItem(product)
+        .then(res => {
           console.log(res)
-        }).catch(err => {
+        })
+        .catch(err => {
           console.error(err)
         })
+        .finally(() => {
+          this.addCartItem(product, quantity)
+        })
+    },
+    deleteCartItem (product) {
+      return this.axios.delete(`https://course-ec-api.hexschool.io/api/${process.env.VUE_APP_UUID}/ec/shopping/${product.id}`)
+    },
+    addCartItem (product, quantity) {
+      this.axios.post(`https://course-ec-api.hexschool.io/api/${process.env.VUE_APP_UUID}/ec/shopping`, {
+        product: product.id,
+        quantity: quantity
+      }).then(res => {
+        console.log(res)
       }).catch(err => {
         console.error(err)
       })
