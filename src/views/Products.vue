@@ -1,6 +1,7 @@
 <template>
   <div id="app" class="container">
-    <product-modal :product="product" v-if="showModal" v-on:close="showModal = false" v-on:addToCart="addToCart"></product-modal>
+    <product-modal :product="product" v-if="showModal" v-on:close="showModal = false"
+                   v-on:addToCart="addToCart"></product-modal>
     <div class="row mt-4">
       <div v-for="product in products" :key="product.id" class="col-md-4 mb-4">
         <div class="card border-0 shadow-sm">
@@ -52,54 +53,53 @@ export default {
     }
   },
   created () {
-    const loading = this.$loading.show()
+    this.getProductList()
+  },
+  mounted () {},
+  methods: {
+    getProductList () {
+      const loading = this.$loading.show()
 
-    this.axios.get(`https://course-ec-api.hexschool.io/api/${process.env.VUE_APP_UUID}/ec/products`)
-      .then(res => {
+      this.axios.get(`https://course-ec-api.hexschool.io/api/${process.env.VUE_APP_UUID}/ec/products`
+      ).then(res => {
         this.products = res.data.data
         loading.hide()
-      })
-      .catch(err => {
+      }).catch(err => {
         console.error(err)
         loading.hide()
       })
-  },
-  mounted () {
-
-  },
-  methods: {
+    },
     getProductDetail (productId) {
       const loading = this.$loading.show()
 
-      this.axios.get(`https://course-ec-api.hexschool.io/api/${process.env.VUE_APP_UUID}/ec/product/${productId}`)
-        .then(res => {
-          this.product = res.data.data
-          this.product.num = 0
-          this.showModal = true
+      this.axios.get(`https://course-ec-api.hexschool.io/api/${process.env.VUE_APP_UUID}/ec/product/${productId}`
+      ).then(res => {
+        this.product = res.data.data
+        this.product.num = 0
+        this.showModal = true
 
-          loading.hide()
-        })
-        .catch(err => {
-          console.error(err)
-          loading.hide()
-        })
+        loading.hide()
+      }).catch(err => {
+        console.error(err)
+        loading.hide()
+      })
     },
     addToCart (product, quantity = 1) {
-      console.log('listen addToCard', product)
+      this.axios.delete(`https://course-ec-api.hexschool.io/api/${process.env.VUE_APP_UUID}/ec/shopping/${product.id}`
+      ).then(res => {
+        console.log(res)
 
-      this.axios.post(`https://course-ec-api.hexschool.io/api/${process.env.VUE_APP_UUID}/ec/shopping`, {
-        product: product.id,
-        quantity: quantity
-      })
-        .then(res => {
+        this.axios.post(`https://course-ec-api.hexschool.io/api/${process.env.VUE_APP_UUID}/ec/shopping`, {
+          product: product.id,
+          quantity: quantity
+        }).then(res => {
           console.log(res)
-        })
-        .catch(err => {
+        }).catch(err => {
           console.error(err)
         })
-    },
-    deleteItem (itemIndex) {
-      this.shoppingList.splice(itemIndex, 1)
+      }).catch(err => {
+        console.error(err)
+      })
     }
   }
 }
