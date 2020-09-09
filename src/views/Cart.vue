@@ -252,6 +252,7 @@ export default {
       })
         .then(res => {
           console.log(res)
+          this.getCartList()
           loader.hide()
         })
         .catch(err => {
